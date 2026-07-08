@@ -12,7 +12,7 @@
   Do not add data fetching, scripts, or route logic here.
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Merriweather:wght@700;900&display=swap');
 
 /* Per-task display + body typefaces (consumed via task-themes.ts). */
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&family=Syne:wght@500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap');
@@ -25,9 +25,8 @@ body {
 }
 
 .editable-site-root {
-  /* Yelp-style clean sans, used for both display and body. */
-  --editable-font-display: 'Inter', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-  --editable-font-body: 'Inter', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --editable-font-display: 'Nunito', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --editable-font-body: 'Nunito', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
   /* Premium easing curve used across every hover + transition. */
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
   font-family: var(--editable-font-body);
@@ -97,8 +96,8 @@ body {
 }
 
 ::selection {
-  background: color-mix(in oklab, var(--slot4-accent-fill) 28%, transparent);
-  color: var(--slot4-page-text);
+  background: #356b1f;
+  color: #fff8d8;
 }
 
 ::-webkit-scrollbar-track {
@@ -120,4 +119,48 @@ body {
 
 .article-content a {
   color: var(--slot4-accent-fill);
+}
+
+.leaf-wave {
+  position: relative;
+  overflow: hidden;
+}
+
+.leaf-wave::before,
+.leaf-wave::after {
+  content: '';
+  position: absolute;
+  inset-inline: -8%;
+  bottom: -72px;
+  height: 190px;
+  border-radius: 50% 50% 0 0;
+  background: color-mix(in oklab, var(--slot4-accent-soft) 78%, white);
+  opacity: 0.78;
+  animation: editable-wave 16s ease-in-out infinite alternate;
+}
+
+.leaf-wave::after {
+  bottom: -112px;
+  background: color-mix(in oklab, var(--slot4-panel-bg) 82%, white);
+  opacity: 0.65;
+  animation-duration: 22s;
+  animation-direction: alternate-reverse;
+}
+
+@keyframes editable-wave {
+  from { transform: translateX(-3%) scaleY(0.9); }
+  to { transform: translateX(3%) scaleY(1.08); }
+}
+
+.editable-auto-slider {
+  animation: editable-slide 34s linear infinite;
+}
+
+.editable-auto-slider:hover {
+  animation-play-state: paused;
+}
+
+@keyframes editable-slide {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
