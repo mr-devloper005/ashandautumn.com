@@ -8,6 +8,7 @@ import type { SitePost } from '@/lib/site-connector'
 import { EditableSiteShell } from '@/editable/shell/EditableSiteShell'
 import { EditableArticleComments } from '@/editable/components/EditableArticleComments'
 import { getTaskTheme, taskThemeStyle } from '@/editable/theme/task-themes'
+import { Ads } from '@/lib/ads'
 
 export const revalidate = 3
 
@@ -116,7 +117,7 @@ const mapSrcFor = (post: SitePost) => {
 export function TaskDetailView({ task, post, related, comments = [] }: { task: TaskKey; post: SitePost; related: SitePost[]; comments?: Array<{ id: string; name: string; comment: string; createdAt: string }> }) {
   return (
     <EditableSiteShell>
-      <main style={taskThemeStyle(task)} className="min-h-screen bg-[var(--tk-bg)] text-[var(--tk-text)]">
+      <main style={taskThemeStyle(task)} className="min-h-screen bg-[#eef5e9] text-[#101410]">
         {task === 'listing' ? <ListingDetail post={post} related={related} /> : null}
         {task === 'classified' ? <ClassifiedDetail post={post} related={related} /> : null}
         {task === 'image' ? <ImageDetail post={post} related={related} /> : null}
@@ -189,24 +190,31 @@ function BackLink({ task }: { task: TaskKey }) {
   )
 }
 
-// ----- Article: a quiet, centred reading column -----
+// ----- Article: directory-style record, mirroring the listing detail structure -----
 function ArticleDetail({ post, related, comments }: { post: SitePost; related: SitePost[]; comments: Array<{ id: string; name: string; comment: string; createdAt: string }> }) {
   const images = getImages(post)
   return (
-    <>
-      <article className="mx-auto max-w-4xl px-6 py-14 sm:py-20">
-        <BackLink task="article" />
-        <p className="mt-10 text-xs font-medium uppercase tracking-[0.28em] text-[var(--tk-accent)]">{categoryOf(post, 'Article')}</p>
-        <h1 className="editable-display mt-5 text-balance text-4xl font-semibold leading-[1.06] tracking-[-0.03em] sm:text-5xl lg:text-[3.4rem]">{post.title}</h1>
-        <div className="mt-6 text-sm text-[var(--tk-muted)]">
-          <span>{SITE_CONFIG.name}</span>
-        </div>
-        {images[0] ? <img src={images[0]} alt="" className="mt-10 aspect-[16/9] w-full rounded-[var(--tk-radius)] border border-[var(--tk-line)] object-cover" /> : null}
-        <BodyContent post={post} />
-        <EditableArticleComments slug={post.slug} comments={comments} />
-      </article>
-      <RelatedStrip task="article" related={related} />
-    </>
+    <section className="mx-auto max-w-[var(--editable-container)] px-6 py-8 sm:py-12 lg:px-8">
+      <div className="mx-auto max-w-6xl px-0 py-6">
+        <Ads slot="header" showLabel eager className="mx-auto w-full" />
+      </div>
+      <BackLink task="article" />
+      <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
+        <article className="min-w-0">
+          <Kicker task="article">{categoryOf(post, 'Article')}</Kicker>
+          <h1 className="editable-display mt-4 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.03em] sm:text-5xl">{post.title}</h1>
+          <DetailMeta post={post} category={SITE_CONFIG.name} />
+          {leadText(post) ? <p className="mt-7 max-w-2xl text-lg leading-8 text-[var(--tk-muted)]">{leadText(post)}</p> : null}
+          {images[0] ? <img src={images[0]} alt="" className="mt-8 aspect-[16/9] w-full rounded-[var(--tk-radius)] border border-[var(--tk-line)] object-cover" /> : null}
+          <BodyContent post={post} />
+          <ImageStrip images={images.slice(1)} label="Gallery" />
+          <EditableArticleComments slug={post.slug} comments={comments} />
+        </article>
+        <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+          <RelatedPanel task="article" post={post} related={related} />
+        </aside>
+      </div>
+    </section>
   )
 }
 
@@ -220,7 +228,10 @@ function ListingDetail({ post, related }: { post: SitePost; related: SitePost[] 
   const website = getField(post, ['website', 'url'])
   const mapSrc = mapSrcFor(post)
   return (
-    <section className="mx-auto max-w-[var(--editable-container)] px-6 py-14 sm:py-20 lg:px-8">
+    <section className="mx-auto max-w-[var(--editable-container)] px-6 py-8 sm:py-12 lg:px-8">
+      <div className="mx-auto max-w-6xl px-0 py-6">
+        <Ads slot="in-feed" showLabel eager className="mx-auto w-full" />
+      </div>
       <BackLink task="listing" />
       <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
         <article className="min-w-0">
@@ -494,7 +505,7 @@ function BadgeLine({ label, value }: { label: string; value: string }) {
   )
 }
 
-function RelatedPanel({ task, post, related }: { task: TaskKey; post: SitePost; related: SitePost[] }) {
+function RelatedPanel({ task, post: _post, related }: { task: TaskKey; post: SitePost; related: SitePost[] }) {
   const taskConfig = getTaskConfig(task)
   return (
     <div className="space-y-6">
@@ -567,4 +578,3 @@ function RelatedCard({ task, post, grid = false }: { task: TaskKey; post: SitePo
     </Link>
   )
 }
-
